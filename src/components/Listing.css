@@ -1,0 +1,88 @@
+/*
+fair exact #ff4800;
+fair lighter #ff7843;
+lighter and transparent #ff5e1ff2;
+darker #e62b00;
+*/
+
+* {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+#logo-top {
+    display: block;
+    margin: 50px auto;
+    width: 200px;
+}
+
+.listing-body {
+display: flex;
+min-height: 100vh;
+flex-direction: row;
+}
+
+/******* All the filters styles *******/
+
+.listing-filters {
+    flex: 1;
+}
+
+/* filter headers */
+th {
+    background-color: #ff5e1ff2;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+/* overwrite default slider color*/
+.rangeslider-horizontal .rangeslider__fill {
+    background-color:  #ff7843;
+}
+
+/******* All the car detail styles *******/
+.listing-cars {
+    flex: 2
+}
+
+.car-listing {
+    cursor: pointer;
+}
+
+.td-car-image {
+    text-align: center; 
+    vertical-align: middle;
+}
+    .car-listing-image {
+        width: 300px;
+    }
+
+/* overwrite default table alignment */
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+    .car-header {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .car-listing-details {
+        font-size: 14px;
+        color: #9f9f9f;
+    }
+
+/* text that appears if no cars match the filters */
+#listing-sorry-text {
+    font-weight: bold;
+}
+
+/******* All Pagination Styles *******/
+
+/* overwrite default pagination color */
+.pagination>.active>span, .pagination>.active>span:hover {
+    background-color: #ff4800;
+    border-color: #e62b00;
+}
+
+.pagination>li>a, .pagination>li>span, .pagination>li>a:hover {
+    color: #ff4800;
+}

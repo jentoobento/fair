@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Slider from "react-rangeslider";
 import {
   Table,
   Pagination,
@@ -9,13 +10,18 @@ import {
   Checkbox
 } from "react-bootstrap";
 import ModalDetail from "./ModalDetail";
-import {Footer} from './Footer'
+import { Footer } from "./Footer";
 import axios from "axios";
 
 import logo from "../images/FAIR_LOGO.png";
+import "./Listing.css";
 
 // the max number of items shown on each page
 const MAX_ITEMS_PER_PAGE = 4;
+// the max amount the starting price slider can be set to
+const MAX_STARTING_PRICE_FOR_SLIDER = 1000;
+// the max amount the monthly fee slider can be set to
+const MAX_MONTHLY_FEE_FOR_SLIDER = 500;
 
 class Listing extends Component {
   constructor(props) {
@@ -26,6 +32,8 @@ class Listing extends Component {
       selectedMakes: [],
       selectedMileage: "No Limit",
       selectedMileageInteger: 999999,
+      startPriceSliderValue: 900,
+      monthlyFeeSliderValue: 400,
       currPageNum: 1
     };
   }
@@ -50,27 +58,33 @@ class Listing extends Component {
               <tr
                 key={i}
                 onClick={() => this.openModalDetail(car)}
-                style={{ cursor: "pointer" }}
+                className="car-listing"
                 data={car}
               >
-                <td>
-                  <img width="300px" src={car.chrome_image_url} alt="car" />
-                </td>
-                <td>{car.make}</td>
-                <td>{car.model}</td>
-                <td>{car.trim}</td>
-                <td>{car.model_year}</td>
-                <td>
-                  $
-                  {(car.product_financials[0].start_fee_cents / 100)
-                    .toFixed(2)
-                    .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
+                <td className="td-car-image">
+                  <img
+                    src={car.chrome_image_url}
+                    alt="car"
+                    className="car-listing-image"
+                  />
                 </td>
                 <td>
-                  $
-                  {(car.product_financials[0].monthly_payment_cents / 100)
-                    .toFixed(2)
-                    .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
+                  <div className="car-header">
+                    {car.model_year} {car.make} {car.model} {car.trim}
+                  </div>
+                  <span className="car-listing-details">
+                    MILES: {car.mileage}
+                    <br />
+                    START: $
+                    {(car.product_financials[0].start_fee_cents / 100)
+                      .toFixed(2)
+                      .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
+                    <br />
+                    MONTHLY: $
+                    {(car.product_financials[0].monthly_payment_cents / 100)
+                      .toFixed(2)
+                      .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
+                  </span>
                 </td>
               </tr>
             );
@@ -127,6 +141,20 @@ class Listing extends Component {
     });
   };
 
+  // record the value of the starting price slider
+  handleStartSliderChange = value => {
+    this.setState({
+      startPriceSliderValue: value
+    });
+  };
+
+  // record the value of the monthly fee slider
+  handleMonthlySliderChange = value => {
+    this.setState({
+      monthlyFeeSliderValue: value
+    });
+  };
+
   // change the state to the selected mileage filter
   changeMileage = (eventKey, event) => {
     this.setState({
@@ -136,7 +164,7 @@ class Listing extends Component {
   };
 
   render() {
-    // reset the index to -1
+    // reset the index to -1 (this causes paginator bug if left out)
     let index = -1;
 
     // split the data into smaller arrays which represent a portion of data shown on any single page
@@ -144,7 +172,12 @@ class Listing extends Component {
       if (
         this.state.selectedMakes.includes(currItem.props.data.make) ||
         (this.state.selectedMakes.length === 0 &&
-          currItem.props.data.mileage <= this.state.selectedMileageInteger)
+          currItem.props.data.mileage <= this.state.selectedMileageInteger &&
+          currItem.props.data.product_financials[0].start_fee_cents / 100 <=
+            this.state.startPriceSliderValue &&
+          currItem.props.data.product_financials[0].monthly_payment_cents /
+            100 <=
+            this.state.monthlyFeeSliderValue)
       ) {
         // the index determines whether the paginator should add a new page or not
         index++;
@@ -191,19 +224,9 @@ class Listing extends Component {
 
     return (
       <React.Fragment>
-        <img
-          src={logo}
-          alt=""
-          width="200px"
-          style={{
-            display: "block",
-            marginLeft: "auto",
-            marginRight: "auto",
-            padding: "10px"
-          }}
-        />
-        <div className="container" style={{'display':'flex','minHeight':'100vh','flexDirection':'row'}}>
-          <div className="col-md-3" style={{'flex':1}}>
+        <img src={logo} alt="logo" id="logo-top" />
+        <div className="container listing-body">
+          <div className="col-md-3 listing-filters">
             <Table>
               <thead>
                 <tr>
@@ -219,28 +242,55 @@ class Listing extends Component {
               </tbody>
               <thead>
                 <tr>
-                  <th>Year</th>
+                  <th>Starting Price</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>
-                    <ButtonToolbar>
-                      <DropdownButton title="From" id="dropdown-size-medium">
-                        <MenuItem eventKey="1">Action</MenuItem>
-                        <MenuItem eventKey="2">Another action</MenuItem>
-                        <MenuItem eventKey="3">Something else here</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey="4">Separated link</MenuItem>
-                      </DropdownButton>
-                      <DropdownButton title="To" id="dropdown-size-medium">
-                        <MenuItem eventKey="1">Action</MenuItem>
-                        <MenuItem eventKey="2">Another action</MenuItem>
-                        <MenuItem eventKey="3">Something else here</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey="4">Separated link</MenuItem>
-                      </DropdownButton>
-                    </ButtonToolbar>
+                    <Slider
+                      min={0}
+                      max={MAX_STARTING_PRICE_FOR_SLIDER}
+                      step={50}
+                      value={this.state.startPriceSliderValue}
+                      onChangeStart={this.handleSliderChangeStart}
+                      onChange={this.handleStartSliderChange}
+                      onChangeComplete={this.handleStartSliderChangeComplete}
+                    />
+                    <div>
+                      $
+                      {this.state.startPriceSliderValue
+                        .toFixed(2)
+                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")}{" "}
+                      or Less
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr>
+                  <th>Monthly Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <Slider
+                      min={0}
+                      max={MAX_MONTHLY_FEE_FOR_SLIDER}
+                      step={10}
+                      value={this.state.monthlyFeeSliderValue}
+                      onChangeStart={this.handleSliderChangeStart}
+                      onChange={this.handleMonthlySliderChange}
+                      onChangeComplete={this.handleSliderChangeComplete}
+                    />
+                    <div>
+                      $
+                      {this.state.monthlyFeeSliderValue
+                        .toFixed(2)
+                        .replace(/\d(?=(\d{3})+\.)/g, "$&,")}{" "}
+                      or Less
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -286,27 +336,18 @@ class Listing extends Component {
               </tbody>
             </Table>
           </div>
-          <div className="col-md-8" style={{'flex':2}}>
-            <Table striped bordered condensed hover>
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Make</th>
-                  <th>Model</th>
-                  <th>Trim</th>
-                  <th>Year</th>
-                  <th>Start Fee</th>
-                  <th>Monthly Fee</th>
-                </tr>
-              </thead>
+          <div className="col-md-8 listing-cars">
+            <Table condensed hover>
               <tbody>
                 {splitListing[this.state.currPageNum - 1] &&
                   splitListing[this.state.currPageNum - 1]}
               </tbody>
             </Table>
-            <div style={{'fontWeight':'bold'}}>{splitListing.length === 0
-              ? "Sorry, we couldn't find a match. :("
-              : ""}</div>
+            <div id="listing-sorry-text">
+              {splitListing.length === 0
+                ? "Sorry, we couldn't find a match. :("
+                : ""}
+            </div>
             {pagination}
             <ModalDetail
               show={this.state.showModal}
@@ -315,7 +356,7 @@ class Listing extends Component {
             />
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </React.Fragment>
     );
   }

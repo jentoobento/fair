@@ -1,0 +1,7 @@
+.footer {
+    background-color: #ff4800;
+    bottom: 0;
+    height: 150px;
+    flex-direction: column;
+    flex: 3;
+}
