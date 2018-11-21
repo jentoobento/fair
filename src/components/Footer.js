@@ -1,7 +1,9 @@
 import React from 'react'
+import './Footer.css'
+
 
 export const Footer = () => {
     return(
-        <div style={{'backgroundColor': '#ff4800', 'bottom':'0', 'height':'150px', 'flexDirection':'column', 'flex': 3}}>insert footer pic here....</div>
+        <div className='footer'></div>
     )
 }
