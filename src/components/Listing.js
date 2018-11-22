@@ -101,6 +101,7 @@ class Listing extends Component {
 
   // open the modal, set state to currently selected car
   openModalDetail = car => {
+    console.log(car.id)
     this.setState({
       showModal: true,
       currentCar: car
@@ -344,9 +345,7 @@ class Listing extends Component {
               </tbody>
             </Table>
             <div id="listing-sorry-text">
-              {splitListing.length === 0
-                ? "Sorry, we couldn't find a match. :("
-                : ""}
+              {splitListing.length === 0 && "Sorry, we couldn't find a match. :("}
             </div>
             {pagination}
             <ModalDetail
