@@ -1,0 +1,88 @@
+* {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+/* overwrite default modal-header styles */
+.modal-header {
+    background-color: #ff5d1d;
+    padding: 0;
+}
+
+/* overwrite default close button in modal header*/
+button.close {
+    padding: 10px;
+}
+
+#modal-logo {
+    display: block;
+    margin: auto;
+    width: 100px;
+}
+
+/********** all the styles ABOVE the orange div ***********/
+.modal-top-details {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+    .modal-icon-div {
+        flex: 1;
+        margin: 50px;
+    }
+
+        .modal-top-details .modal-star-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+    .modal-detail-text {
+        margin: 30px 0px 30px 30px;
+        flex: 2;
+    }
+
+        .modal-year-make {
+            font-size: 24px;
+            color: #6b6b6b;
+        }
+
+        .modal-model-trim {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .modal-miles {
+            font-size: 20px;
+            color: #ff4e00c7;
+        }
+
+/****** the orange center div *******/
+.modal-center-div {
+    background-color: #ff5d1d;
+    height: 14px;
+}
+
+/********* all styles for elements BELOW the orange div **********/
+
+.modal-payment-details {
+    margin: 30px 0px 20px 30px;
+    display: flex;
+    flex-direction: row;
+}
+    .modal-monthly-div {
+        flex: 1;
+    }
+        .modal-payment-headers {
+            font-size: 22px;
+        }
+
+        .modal-monthly-fee {
+            font-size: 50px;
+            color: #ff5d1d;
+        }
+
+    .modal-start-div {
+        flex: 2;
+    }
+        .modal-start-fee {
+            font-size: 50px;
+        }

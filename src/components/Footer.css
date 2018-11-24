@@ -1,3 +1,10 @@
+#footer-cars {
+    height: 100px;
+    margin-bottom: -230px;
+    margin-left: 10%;
+    overflow: hidden;
+}
+
 .footer {
     background-color: #ff4800;
     bottom: 0;

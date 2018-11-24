@@ -7,14 +7,31 @@ import {
   DropdownButton,
   MenuItem,
   FormGroup,
-  Checkbox
+  Checkbox,
+  OverlayTrigger,
+  Tooltip
 } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ModalDetail from "./ModalDetail";
 import { Footer } from "./Footer";
 import axios from "axios";
 
 import logo from "../images/FAIR_LOGO.png";
 import "./Listing.css";
+
+let notFavorite = {
+  marginLeft: "85%",
+  fontSize: "20px",
+  color: "#ff7843",
+  opacity: ".2"
+};
+
+let favorite = {
+  marginLeft: "85%",
+  fontSize: "20px",
+  color: "#ff7843",
+  opacity: "100"
+};
 
 // the max number of items shown on each page
 const MAX_ITEMS_PER_PAGE = 4;
@@ -26,14 +43,18 @@ const MAX_MONTHLY_FEE_FOR_SLIDER = 500;
 class Listing extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      listing: [],
+      allCars: [],
+      // listing: [],
       makes: [],
       selectedMakes: [],
+      favoritedCars: [],
       selectedMileage: "No Limit",
       selectedMileageInteger: 999999,
       startPriceSliderValue: 900,
       monthlyFeeSliderValue: 400,
+      showFavoritesOnly: false,
       currPageNum: 1
     };
   }
@@ -46,52 +67,25 @@ class Listing extends Component {
       .then(response => {
         // populate makes with the ones coming from data
         let makes = [];
+        for (let i = 0; i < response.data.data.vehicles.length; i++) {
+          if (!makes.includes(response.data.data.vehicles[i].make)) {
+            makes.push(response.data.data.vehicles[i].make);
+          }
+        }
 
-        // populate vehicles with html table row containing all data
-        let vehicles =
-          response.data.data.vehicles &&
-          response.data.data.vehicles.map((car, i) => {
-            if (!makes.includes(car.make)) {
-              makes.push(car.make);
-            }
-            return (
-              <tr
-                key={i}
-                onClick={() => this.openModalDetail(car)}
-                className="car-listing"
-                data={car}
-              >
-                <td className="td-car-image">
-                  <img
-                    src={car.chrome_image_url}
-                    alt="car"
-                    className="car-listing-image"
-                  />
-                </td>
-                <td>
-                  <div className="car-header">
-                    {car.model_year} {car.make} {car.model} {car.trim}
-                  </div>
-                  <span className="car-listing-details">
-                    MILES: {car.mileage}
-                    <br />
-                    START: $
-                    {(car.product_financials[0].start_fee_cents / 100)
-                      .toFixed(2)
-                      .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
-                    <br />
-                    MONTHLY: $
-                    {(car.product_financials[0].monthly_payment_cents / 100)
-                      .toFixed(2)
-                      .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
-                  </span>
-                </td>
-              </tr>
-            );
-          }); // end map
+        // get information from local storage if any
+        let localStorageFavorites = [];
+        if (
+          localStorage.fairFavorites &&
+          JSON.parse(localStorage.fairFavorites).length > 0
+        ) {
+          localStorageFavorites = JSON.parse(localStorage.fairFavorites);
+        }
+
         this.setState({
-          listing: vehicles,
-          makes: makes
+          allCars: response.data.data.vehicles,
+          makes: makes,
+          favoritedCars: localStorageFavorites
         });
       })
       .catch(err => {
@@ -99,8 +93,41 @@ class Listing extends Component {
       });
   }
 
+  // change appearance of star and update local storage
+  toggleFavorite = (e, car) => {
+    // do not call onClick event to open the modal
+    e.stopPropagation();
+
+    // update the state of favoritedCars
+    let arr = this.state.favoritedCars;
+    if (arr.includes(car.id)) {
+      arr.splice(arr.indexOf(car.id), 1);
+    } else {
+      arr.push(car.id);
+    }
+
+    // update local storage
+    localStorage.setItem(
+      "fairFavorites",
+      arr === [] ? null : JSON.stringify(arr)
+    );
+
+    this.setState({
+      favoritedCars: arr
+    });
+  };
+
+  // set the filter for favorites
+  favoriteCheckboxOnChange = e => {
+    let flag = e.target.checked;
+    this.setState({
+      showFavoritesOnly: flag
+    });
+  };
+
   // open the modal, set state to currently selected car
   openModalDetail = car => {
+    console.log(car.id);
     this.setState({
       showModal: true,
       currentCar: car
@@ -164,15 +191,90 @@ class Listing extends Component {
   };
 
   render() {
+    // populate vehiclesHtml with html table row containing all data
+    let vehiclesHtml =
+      this.state.allCars &&
+      this.state.allCars.map((car, i) => {
+        return (
+          <tr
+            key={i}
+            onClick={() => this.openModalDetail(car)}
+            className="car-listing"
+            data={car}
+          >
+            <td className="td-car-image">
+              <img
+                src={car.chrome_image_url}
+                alt="car"
+                className="car-listing-image"
+              />
+            </td>
+            <td>
+              <FontAwesomeIcon
+                icon="star"
+                style={
+                  this.state.favoritedCars &&
+                  this.state.favoritedCars.includes(car.id)
+                    ? favorite
+                    : notFavorite
+                }
+                onClick={e => {
+                  this.toggleFavorite(e, car);
+                }}
+              />
+              <div className="car-header">
+                {car.model_year} {car.make} {car.model} {car.trim}
+              </div>
+              <span className="car-listing-details">
+                MILES: {car.mileage}
+                <br />
+                START: $
+                {(car.product_financials[0].start_fee_cents / 100)
+                  .toFixed(2)
+                  .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
+                <br />
+                MONTHLY: $
+                {(car.product_financials[0].monthly_payment_cents / 100)
+                  .toFixed(2)
+                  .replace(/\d(?=(\d{3})+\.)/g, "$&,")}
+              </span>
+            </td>
+          </tr>
+        );
+      });
+
     // reset the index to -1 (this causes paginator bug if left out)
     let index = -1;
 
     // split the data into smaller arrays which represent a portion of data shown on any single page
-    let splitListing = this.state.listing.reduce((finalArr, currItem) => {
-      if (
-        this.state.selectedMakes.includes(currItem.props.data.make) ||
-        (this.state.selectedMakes.length === 0 &&
-          currItem.props.data.mileage <= this.state.selectedMileageInteger &&
+    let splitListing = vehiclesHtml.reduce((finalArr, currItem) => {
+      if (this.state.showFavoritesOnly) {
+        if (
+          this.state.favoritedCars.includes(currItem.props.data.id) &&
+          (this.state.selectedMakes.includes(currItem.props.data.make) ||
+            this.state.selectedMakes.length === 0) &&
+          (currItem.props.data.mileage <= this.state.selectedMileageInteger &&
+            currItem.props.data.product_financials[0].start_fee_cents / 100 <=
+              this.state.startPriceSliderValue &&
+            currItem.props.data.product_financials[0].monthly_payment_cents /
+              100 <=
+              this.state.monthlyFeeSliderValue)
+        ) {
+          // the index determines whether the paginator should add a new page or not
+          index++;
+          const pageIndex = Math.floor(index / MAX_ITEMS_PER_PAGE);
+
+          // if the page is full, create a new page
+          if (!finalArr[pageIndex]) {
+            finalArr[pageIndex] = [];
+          }
+          finalArr[pageIndex].push(currItem);
+        }
+        return finalArr;
+      } else if (
+        (this.state.selectedMakes.includes(currItem.props.data.make) ||
+          this.state.selectedMakes.length === 0) &&
+        (currItem.props.data.mileage <= this.state.selectedMileageInteger &&
           currItem.props.data.product_financials[0].start_fee_cents / 100 <=
             this.state.startPriceSliderValue &&
           currItem.props.data.product_financials[0].monthly_payment_cents /
@@ -197,6 +299,7 @@ class Listing extends Component {
     for (let number = 1; number <= splitListing.length; number++) {
       items.push(
         <Pagination.Item
+          key={number}
           active={number === this.state.currPageNum}
           onClick={() => this.nextPage(number)}
         >
@@ -216,11 +319,19 @@ class Listing extends Component {
       this.state.makes &&
       this.state.makes.map(make => {
         return (
-          <Checkbox onChange={this.checkboxChange} id={make}>
+          <Checkbox key={make} onChange={this.checkboxChange} id={make}>
             {make}
           </Checkbox>
         );
       });
+
+    const tooltipText = (
+      <Tooltip id="tooltip-favorite-cars">
+        Don't see any favorites? You probably haven't favorited anything yet!
+        Click the star next to a vehicle to add or delete that vehicle from your
+        favorites.
+      </Tooltip>
+    );
 
     return (
       <React.Fragment>
@@ -228,6 +339,25 @@ class Listing extends Component {
         <div className="container listing-body">
           <div className="col-md-3 listing-filters">
             <Table>
+              <thead>
+                <tr>
+                  <th>Favorited</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <FormGroup>
+                      <Checkbox onChange={this.favoriteCheckboxOnChange}>
+                        Show Favorites{" "}
+                        <OverlayTrigger overlay={tooltipText}>
+                          <FontAwesomeIcon icon="question-circle" />
+                        </OverlayTrigger>
+                      </Checkbox>
+                    </FormGroup>
+                  </td>
+                </tr>
+              </tbody>
               <thead>
                 <tr>
                   <th>Make</th>
@@ -344,15 +474,16 @@ class Listing extends Component {
               </tbody>
             </Table>
             <div id="listing-sorry-text">
-              {splitListing.length === 0
-                ? "Sorry, we couldn't find a match. :("
-                : ""}
+              {splitListing.length === 0 &&
+                "Sorry, we couldn't find a match. :("}
             </div>
             {pagination}
             <ModalDetail
               show={this.state.showModal}
               onHide={this.closeModalDetail}
               car={this.state.currentCar}
+              favCars={this.state.favoritedCars}
+              toggleFav={(e) => this.toggleFavorite(e, this.state.currentCar)}
             />
           </div>
         </div>
