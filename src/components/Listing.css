@@ -63,6 +63,19 @@ th {
 .table>tbody>tr>td {
     vertical-align: middle;
 }
+    /* overwrite default font awesome icon*/
+    .svg-inline--fa.fa-w-18 {
+        margin-left: 85%;
+        font-size: 20px;
+        color: #ff7843;
+        opacity: .2;
+    }
+    .svg-inline--fa.fa-w-18:hover {
+        margin-left: 85%;
+        font-size: 20px;
+        color: #ff7843;
+        opacity: 100;
+    }
     .car-header {
         font-size: 16px;
         font-weight: bold;
