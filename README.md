@@ -4,6 +4,9 @@ A Car Listing using Fair API that implements common features for a user looking 
 ## Description
 Create an react web app to merchandise vehicles. User can filter through common features to narrow down their choice such as Make, Mileage, etc. User can click a car they are interested in to see more information about that car. User can favorite multiple cars for later and filter them to narrow their choice even futher.
 
+<img src="https://github.com/jentoobento/fair/blob/master/homepage.jpg" width="500px"/>
+Deployed here: https://jentoobento.github.io/fair/#/
+
 ## Basic Usage
 npm install
 npm start
