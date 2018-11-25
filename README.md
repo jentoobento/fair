@@ -25,11 +25,9 @@ npm start
   - User can favorite and unfavorite either on the Listing or Detail Page
   - Favorites are tracked and persisted locally
   - Favorites on the Lisiting and Detail Page are synced
-
-## Testing
-Tested all sorts of scenarios with the filters, favorites, etc. by clicking everything and making sure all works like its supposed to.
-
-## Other Items of Note
-- Error text shows briefly while the API is loading response on mount. This is because I'm checking if the array is empty and sending an error message and the array is briefly empty before the API response returns to me. 
-- Images flicker briefly when using pagination. I believe this is because the component is re-rendering and re-mapping.
-- Car Details show previous car briefly while API is loading response for the modal. 
+- Testing
+  - Attempted to unit test. I don't know how to do so, but am definitely willing to learn!
+- Known Bugs
+  - Error text shows briefly while the API is loading response on mount. This is because I'm checking if the array is empty and sending an error message and the array is briefly empty before the API response returns to me. 
+  - Images flicker briefly when using pagination.
+  - Car Details show previous car briefly while API is loading response for the modal.
