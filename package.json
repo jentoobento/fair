@@ -2,7 +2,7 @@
   "name": "fair",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://jentoobento.github.io/fair",
+  "homepage": "https://jentoobento.github.io/fair",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
     "@fortawesome/free-solid-svg-icons": "^5.5.0",
@@ -19,8 +19,7 @@
     "react-test-renderer": "^16.6.3"
   },
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "npm run build&&gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faStar, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import Listing from "./components/Listing/Listing";
@@ -10,11 +10,11 @@ library.add(faStar, faQuestionCircle)
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <div>
           <Route exact path="/" component={Listing} />
         </div>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
