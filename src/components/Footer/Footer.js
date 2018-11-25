@@ -1,5 +1,5 @@
 import React from "react";
-import footerCars from "../images/car_lineup.png";
+import footerCars from "../../images/car_lineup.png";
 import "./Footer.css";
 
 export const Footer = () => {
