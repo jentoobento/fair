@@ -12,19 +12,19 @@ self.__precacheManifest = [
     "url": "/fair/static/js/runtime~main.475defc1.js"
   },
   {
-    "revision": "566c5c1f9db16f56f920",
-    "url": "/fair/static/js/main.566c5c1f.chunk.js"
+    "revision": "7278427e8c4ec6a01b4f",
+    "url": "/fair/static/js/main.7278427e.chunk.js"
   },
   {
-    "revision": "3885e761cdd9341d11ee",
-    "url": "/fair/static/js/1.3885e761.chunk.js"
+    "revision": "981dc04652a0ebf15a75",
+    "url": "/fair/static/js/1.981dc046.chunk.js"
   },
   {
-    "revision": "566c5c1f9db16f56f920",
+    "revision": "7278427e8c4ec6a01b4f",
     "url": "/fair/static/css/main.4913d18e.chunk.css"
   },
   {
-    "revision": "892972300f63ef1ae8cba9f27ffe4e84",
+    "revision": "1ea4ad0f684d4a48e5d40c202eed1323",
     "url": "/fair/index.html"
   }
 ];
