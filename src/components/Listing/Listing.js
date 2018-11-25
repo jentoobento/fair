@@ -12,11 +12,11 @@ import {
   Tooltip
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ModalDetail from "./ModalDetail";
-import { Footer } from "./Footer";
+import ModalDetail from "../ModalDetail/ModalDetail";
+import { Footer } from "../Footer/Footer";
 import axios from "axios";
 
-import logo from "../images/FAIR_LOGO.png";
+import logo from "../../images/FAIR_LOGO.png";
 import "./Listing.css";
 
 let notFavorite = {
@@ -46,7 +46,6 @@ class Listing extends Component {
 
     this.state = {
       allCars: [],
-      // listing: [],
       makes: [],
       selectedMakes: [],
       favoritedCars: [],
@@ -127,7 +126,6 @@ class Listing extends Component {
 
   // open the modal, set state to currently selected car
   openModalDetail = car => {
-    console.log(car.id);
     this.setState({
       showModal: true,
       currentCar: car
@@ -281,11 +279,8 @@ class Listing extends Component {
             100 <=
             this.state.monthlyFeeSliderValue)
       ) {
-        // the index determines whether the paginator should add a new page or not
         index++;
         const pageIndex = Math.floor(index / MAX_ITEMS_PER_PAGE);
-
-        // if the page is full, create a new page
         if (!finalArr[pageIndex]) {
           finalArr[pageIndex] = [];
         }

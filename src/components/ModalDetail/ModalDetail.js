@@ -3,8 +3,8 @@ import axios from "axios";
 import { Modal, Button, Carousel } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import logo from "../images/fair_alt.jpg";
-import imageAlt from "../images/nopreview.jpg";
+import logo from "../../images/fair_alt.jpg"
+import imageAlt from "../../images/nopreview.jpg";
 import "./ModalDetail.css";
 
 let notFavorite = {
@@ -40,7 +40,6 @@ class ModalDetail extends React.Component {
         }`
       })
         .then(response => {
-          console.log(response.data.data.vehicle);
           this.setState({
             car: response.data.data.vehicle,
             requestDidError: false
@@ -48,8 +47,6 @@ class ModalDetail extends React.Component {
         })
         .catch(err => {
           console.log("there was an error getting car details", err);
-          console.log(err.response);
-          console.log(err.response.status);
           this.setState({
             requestDidError: true
           });
@@ -106,7 +103,7 @@ class ModalDetail extends React.Component {
                     icon="star"
                     className="modal-star-icon"
                     style={
-                      this.props.favCars.includes(this.state.car.id)
+                      this.props.favCars && this.props.favCars.includes(this.state.car.id)
                         ? favorite
                         : notFavorite
                     }
