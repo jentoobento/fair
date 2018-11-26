@@ -14,30 +14,28 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ModalDetail from "../ModalDetail/ModalDetail";
 import { Footer } from "../Footer/Footer";
-import axios from "axios";
 
 import logo from "../../images/FAIR_LOGO.png";
+import * as ListingService from "../../services/Listing.service";
 import "./Listing.css";
 
-let notFavorite = {
-  marginLeft: "85%",
-  fontSize: "20px",
-  color: "#ff7843",
-  opacity: ".2"
+let styles = {
+  notFavorite: {
+    marginLeft: "85%",
+    fontSize: "20px",
+    color: "#ff7843",
+    opacity: ".2"
+  },
+  favorite: {
+    marginLeft: "85%",
+    fontSize: "20px",
+    color: "#ff7843",
+    opacity: "100"
+  }
 };
 
-let favorite = {
-  marginLeft: "85%",
-  fontSize: "20px",
-  color: "#ff7843",
-  opacity: "100"
-};
-
-// the max number of items shown on each page
 const MAX_ITEMS_PER_PAGE = 4;
-// the max amount the starting price slider can be set to
 const MAX_STARTING_PRICE_FOR_SLIDER = 1000;
-// the max amount the monthly fee slider can be set to
 const MAX_MONTHLY_FEE_FOR_SLIDER = 500;
 
 class Listing extends Component {
@@ -59,16 +57,13 @@ class Listing extends Component {
   }
 
   componentDidMount() {
-    axios({
-      method: "GET",
-      url: "https://private-4e19e-interviewapi3.apiary-mock.com/vehicles?page="
-    })
+    ListingService.getAll()
       .then(response => {
         // populate makes with the ones coming from data
         let makes = [];
-        for (let i = 0; i < response.data.data.vehicles.length; i++) {
-          if (!makes.includes(response.data.data.vehicles[i].make)) {
-            makes.push(response.data.data.vehicles[i].make);
+        for (let i = 0; i < response.data.vehicles.length; i++) {
+          if (!makes.includes(response.data.vehicles[i].make)) {
+            makes.push(response.data.vehicles[i].make);
           }
         }
 
@@ -82,7 +77,7 @@ class Listing extends Component {
         }
 
         this.setState({
-          allCars: response.data.data.vehicles,
+          allCars: response.data.vehicles,
           makes: makes,
           favoritedCars: localStorageFavorites
         });
@@ -213,8 +208,8 @@ class Listing extends Component {
                 style={
                   this.state.favoritedCars &&
                   this.state.favoritedCars.includes(car.id)
-                    ? favorite
-                    : notFavorite
+                    ? styles.favorite
+                    : styles.notFavorite
                 }
                 onClick={e => {
                   this.toggleFavorite(e, car);
@@ -478,7 +473,7 @@ class Listing extends Component {
               onHide={this.closeModalDetail}
               car={this.state.currentCar}
               favCars={this.state.favoritedCars}
-              toggleFav={(e) => this.toggleFavorite(e, this.state.currentCar)}
+              toggleFav={e => this.toggleFavorite(e, this.state.currentCar)}
             />
           </div>
         </div>
