@@ -1,25 +1,26 @@
 import React from "react";
-import axios from "axios";
 import { Modal, Button, Carousel } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import logo from "../../images/fair_alt.jpg"
 import imageAlt from "../../images/nopreview.jpg";
+import * as ModalService from '../../services/ModalDetail.service'
 import "./ModalDetail.css";
 
-let notFavorite = {
-  marginLeft: "85%",
-  fontSize: "20px",
-  color: "#ff7843",
-  opacity: ".2"
-};
-
-let favorite = {
-  marginLeft: "85%",
-  fontSize: "20px",
-  color: "#ff7843",
-  opacity: "100"
-};
+let styles = {
+  notFavorite: {
+      marginLeft: "85%",
+      fontSize: "20px",
+      color: "#ff7843",
+      opacity: ".2"
+  },
+  favorite: {
+    marginLeft: "85%",
+    fontSize: "20px",
+    color: "#ff7843",
+    opacity: "100"
+  }
+}
 
 class ModalDetail extends React.Component {
   constructor(props) {
@@ -33,15 +34,10 @@ class ModalDetail extends React.Component {
   componentWillReceiveProps(futureProps) {
     if (futureProps.car !== this.props.car) {
       // use the VIN to call the API
-      axios({
-        method: "GET",
-        url: `https://private-4e19e-interviewapi3.apiary-mock.com/vehicles/${
-          futureProps.car.id
-        }`
-      })
+      ModalService.getById(futureProps.car.id)
         .then(response => {
           this.setState({
-            car: response.data.data.vehicle,
+            car: response.data.vehicle,
             requestDidError: false
           });
         })
@@ -104,8 +100,8 @@ class ModalDetail extends React.Component {
                     className="modal-star-icon"
                     style={
                       this.props.favCars && this.props.favCars.includes(this.state.car.id)
-                        ? favorite
-                        : notFavorite
+                        ? styles.favorite
+                        : styles.notFavorite
                     }
                     onClick={this.props.toggleFav}
                   />
