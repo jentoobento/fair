@@ -1,4 +1,4 @@
-# Fair
+# [Fair](https://jentoobento.github.io/fair/#/ "Click here to go to the deployed page")
 A Car Listing using Fair API that implements common features for a user looking to rent a car
 
 ## Description
