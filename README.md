@@ -8,8 +8,8 @@ Create an react web app to merchandise vehicles. User can filter through common 
 Deployed here: https://jentoobento.github.io/fair/#/
 
 ## Basic Usage
-npm install
-npm start
+`npm install`<br />
+`npm start`
 
 ## Features
 - Car Listing Page
